@@ -1,18 +1,25 @@
 {
-  "name": "hello_node",
+  "name": "projeto",
   "version": "1.0.0",
-  "description": "Hello Node.js",
+  "description": "deswebiii.js",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "keywords": [
     "Hello"
   ],
-  "author": "Renato Lenz Costalima",
+  "author": "Thiago Cadore Vale",
   "license": "Apache-2.0",
   "dependencies": {
-  },
-  "devDependencies": {
+    "bcrypt": "^5.1.1",
+    "bootstrap": "^5.3.2",
+    "dotenv": "^16.4.2",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql": "^2.18.1",
+    "node-sass": "^9.0.0",
+    "nodemon": "^3.0.3"
   }
 }

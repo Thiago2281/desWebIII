@@ -1,12 +1,22 @@
-const http = require('http');
 
-const PORT = 3000;
-const server = http.createServer((req, res) => {
-    const url = req.url;
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end('Hello, ' + url + '!\n');
-});
+const express = require('express')
+const app = express()
+const port = 3000
 
-server.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
-});
+app.use(express.static('public'));
+
+app.set('view engine', 'ejs');
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.get('/sobre', (req, res) => {
+    res.render('sobre')
+  })
+  
+
+
+app.listen(port, () => {
+  console.log(`App listening on port ${port}`)
+})
