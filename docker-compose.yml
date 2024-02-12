@@ -8,12 +8,12 @@ services:
     volumes:
       - ./app:/home/node/app
       - /home/node/app/node_modules
-  #bd:
-  #  image: mariadb:latest
-  #  env_file: .env
-  #  volumes:
-  #    - ./mariadb/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-  #    - dados_mariadb:/var/lib/mysql
-#volumes:
-#  dados_mariadb:
-#  node_modules:
+  bd:
+    image: mariadb:latest
+    env_file: .env
+    volumes:
+      - ./mariadb/setup.sql:/docker-entrypoint-initdbd/setup.sql
+      - dados_mariadb:/var/lib/mysql
+volumes:
+  dados_mariadb:
+  node_modules:

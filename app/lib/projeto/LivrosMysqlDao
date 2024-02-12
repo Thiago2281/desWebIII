@@ -1,0 +1,103 @@
+const Livro = require("./livro")
+
+class LivrosMysqlDao {
+    constructor(pool) {
+        this.pool = pool;
+    }
+    async listar(pagina) {
+        return new Promise((resolve, reject) => {
+            let limite="";
+            if (pagina) {
+                let offset= (pagina+4);
+                console.log({offset});
+                let registrosPorPagina=4;
+                limite=` limit ${offset}, ${registrosPorPagina}`
+            }
+            this.pool.query(`SELECT * FROM livros${limite}`, function (error, linhas, fields) {
+                if (error) {
+                    return reject('Erro: ' + error.message);
+                }
+                let livros = linhas /*.map(linha => {
+                    let { id, nome, lado } = linha;
+                    return new Livro(nome, lado, id);
+                })*/
+                resolve(livros);
+            });
+        });
+    }
+
+    inserir(livro) {
+        this.validar(livro);
+
+        return new Promise((resolve, reject) => {
+            let sql = 'INSERT INTO livros (titulo, autor, categoria, resumo) VALUES (?, ?, ?);';
+            console.log({sql}, livro);
+            this.pool.query(sql, [livro.titulo, livro.autor, livro.categoria, livro.resumo], function (error, resultado, fields) {
+                if (error) {
+                    return reject('Erro: ' + error.message);
+                }
+                return resolve(resultado.insertId);
+            });
+        });
+    }
+
+    alterar(id, livro) {
+        this.validar(livro);
+        return new Promise((resolve, reject) => {
+            let sql = 'UPDATE livros SET titulo=?, autor=?, categoria=?, resumo=? WHERE id=?;';
+            this.pool.query(sql, [livro.data, livro.autor, livro.categoria, livro.resumo, id], function (error, resultado, fields) {
+                if (error) {
+                    return reject('Erro: ' + error.message);
+                }
+                return resolve(resultado.alterId);
+            });
+        });
+    }
+
+    ver (id) {
+        return new Promise((resolve, reject) => {
+            let sql = 'SELECT * FROM livros WHERE id=?;';
+            this.pool.query(sql, id, function (error, linhas, fields) {
+                if (error) {
+                    return reject('Erro: ' + error.message);
+                }
+                let livros = linhas.map(linha => {
+                    let { id, data, autor, resumo } = linha;
+                    return new Livro(data, autor, resumo, id);
+                })
+                resolve(livros[0]);
+            });
+        });
+    }
+
+    apagar(id) {
+        return new Promise((resolve, reject) => {
+            let sql = 'DELETE FROM livros WHERE id=?;';
+            this.pool.query(sql, id, function (error, resultado, fields) {
+                if (error) {
+                    return reject('Erro: ' + error.message);
+                }
+                return resolve(resultado.deleteId);
+            });
+        });
+    }
+
+    validar(livro) {
+        if (livro.titulo == '') {
+            throw new Error('mensagem_titulo_em_branco');
+        }
+        if (livro.autor == '') {
+            throw new Error('mensagem_autor_em_branco');
+        }
+        if (livro.resumo == '') {
+            throw new Error('mensagem_resumo_em_branco');
+        }
+        if (livro.categoria == '') {
+            throw new Error('mensagem_categoria_em_branco');
+        }
+    }
+
+
+}
+
+module.exports = LivrosMysqlDao;

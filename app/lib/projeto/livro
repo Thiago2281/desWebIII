@@ -1,0 +1,10 @@
+class Livro {
+    constructor(titulo, autor, categoria, resumo, id) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.categoria = categoria;
+        this.resumo = resumo;
+        this.id = id;
+    }
+}
+module.exports = Livro
