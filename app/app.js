@@ -4,17 +4,32 @@ const app = express()
 const port = 3000
 var bodyParser = require('body-parser')
 const mysql = require('mysql');
-
+const UsuariosSequelizeDao = require('./lib/projeto/UsuariosSequelizeDao');
+const UsuariosController = require('./controllers/UsuariosController');
 /* criar conexão com o bando de dados  */
 const pool  = mysql.createPool({
     connectionLimit : 10,
     host            : 'bd', 
-    user            : process.env.MARIADB_USER,
+    user            : 'root',
     password        : process.env.MARIADB_PASSWORD,
     database        : process.env.MARIADB_DATABASE,
 });
 module.exports = pool;
 
+const Sequelize = require("sequelize");
+
+const sequelize = new Sequelize(
+    process.env.MARIADB_DATABASE,
+    'root',
+    process.env.MARIADB_PASSWORD,
+    {
+        host: 'bd',
+        dialect: 'mysql'
+    }
+);
+
+let usuariosDao = new UsuariosSequelizeDao(sequelize);
+let usuariosController = new UsuariosController(usuariosDao);
 /* identificar dados passados na URL */
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -32,13 +47,16 @@ app.use(express.static('public'));
 /* usar arquivos ejs como renderização */
 app.set('view engine', 'ejs');
 
+app.get('/', (req, res) => {
+  res.render('index')
+})
 
 app.get('/index', (req, res) => {
   pool.query('SELECT livros.titulo, livros.autor, categorias.nome AS categoria, livros.resumo FROM livros JOIN categorias ON livros.id_categoria=categorias.id ORDER BY titulo, autor', [], function(erro, listagem) {
     if(erro){
       res.status(200).send(erro)
     }
-    res.render('lista', {lista:listagem});
+    res.render('lista', {livros: listagem});
   });
 });
 
@@ -57,7 +75,7 @@ app.get('/edicao', (req, res) => {
     if(erro){
       res.status(200).send(erro)
     }
-    res.render('edicao', {lista:listagem});
+    res.render('edicao', {livros: listagem});
   });
 })
 
@@ -90,18 +108,19 @@ app.get('/exclusao', (req, res) => {
     if(erro){
       res.status(200).send(erro)
     }
-    res.render('exclusao', {lista:listagem});
+    res.render('exclusao', {livros: listagem});
   });
 })
 
-/* rota para atualizar os dados do item escolhido */
-app.get('/exclusao/:id', (req, res) => {
+/* rota para excluir os dados do item escolhido */
+app.delete('/exclusao/:id', (req, res) => {
   pool.query('DELETE FROM livros WHERE id = ?', [req.params.id], 
   function(erro) {
     if(erro){
       res.status(200).send(erro)
-    }
-    res.redirect('/index');     
+    }else{
+      res.status(200).send('OK');
+    }   
   });
 })
 
@@ -116,6 +135,9 @@ app.post('/cadastro', (req, res) => {
     res.redirect('/index');
   });
 })
+
+
+app.use('/usuarios', usuariosController.getRouter());
 
 /* imprime no console a porta e atesta que está conectado */
 app.listen(port, () => {

@@ -21,15 +21,14 @@
             </tr>
         </thead>
         <tbody>
-    <% for (livro of lista){ %>
+    <% for (livro of livros){ %>
             <tr>    
                 <td><%- livro.titulo %></td>
                 <td><%- livro.autor %></td>
                 <td><%- livro.categoria %></td>
                 <td><%- livro.resumo %></td>
 
-                <td><a href="/exclusao/<%- livro.id %>"><img src="/_img/x-circle.svg" style="width: 20px;"></a></td>
-                    
+                <td><a href='#' onclick="deletar(<%- livro.id %>)"><img src="/_img/x-circle.svg" style="width: 20px;"></a></td>    
             </tr>
     <% } %>
         </tbody>
@@ -45,3 +44,5 @@
 </footer>
 </body>
 </html>
+
+<script src="/_js/livros.js"></script>
