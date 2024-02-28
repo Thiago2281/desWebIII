@@ -28,8 +28,7 @@
                 <td><%- livro.categoria %></td>
                 <td><%- livro.resumo %></td>
 
-                <td><a href="/exclusao/<%- livro.id %>"><img src="/_img/x-circle.svg" style="width: 20px;"></a></td>
-                    
+                <td><a href='#' onclick="deletar(<%- livro.id %>)"><img src="/_img/x-circle.svg" style="width: 20px;"></a></td>    
             </tr>
     <% } %>
         </tbody>
@@ -45,3 +44,22 @@
 </footer>
 </body>
 </html>
+
+<script>
+    function deletar(id) {
+        const answer = confirm("Deseja realmente excluir este registro id " + id + "?");
+        if (answer) {
+            $.ajax({   
+                type:'DELETE', 
+                url: `/exclusao/${id}`,
+                success: function (resultado) {
+                    if(resultado == 'OK') {
+                        window.location.reload();
+                    }else{
+                        alert(resultado)
+                    }
+                }
+            });
+        };
+    }
+</script> 

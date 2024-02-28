@@ -1,33 +1,46 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <title>Livros listados</title>
+    <title>Liquidação</title>
     <%- include('../views/head'); %>
 </head>
 <body>
     <%- include('../views/nav'); %>
     <div class="text-center pt-4">
-        <h2>Livros listados</h2>
-        <p class="lead">Segue abaixo relação de livros já incluídos</p>
+
+        <p class="lead">Confira abaixo os dados da liquidação</p>
     </div>
     <table class="table table-hover" style="margin: 0 auto; width: 70%;">
         <thead class="table-dark">    
             <tr>
-                <th style="width: 30%">Título</th>
-                <th style="width: 20%">Autor</th>
-                <th style="width: 10%">Categoria</th>
-                <th style="width: 40%">Resumo</th>
+                <th style="width: 30%">Opção</th>
+                <th style="width: 30%">CNPJ</th>
+                <th style="width: 30%">Valor NF</th>
+                <th style="width: 30%">Empenho</th>
+                <th style="width: 30%">Subitem</th>
             </tr>
         </thead>
         <tbody>
-    <% for (livro of lista){ %>
             <tr>    
-                <td><%- livro.titulo %></td>
-                <td><%- livro.autor %></td>
-                <td><%- livro.categoria %></td>
-                <td><%- livro.resumo %></td>
+                <td><%- opcao %></td>
+                <td><%- cnpj %></td>
+                <td><%- valorBruto %></td>
+                <td><%- empenho %></td>
+                <td><%- subitem %></td>
             </tr>
-    <% } %>
+        </tbody>
+    </table>
+
+    <table class="table table-hover" style="margin: 0 auto; width: 70%;">
+        <thead class="table-dark">    
+            <tr>
+                <th style="width: 30%">Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>    
+                <td><%- descricao %></td>
+            </tr>
         </tbody>
     </table>
     <div  class="text-center">
