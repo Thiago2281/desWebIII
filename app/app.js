@@ -6,6 +6,8 @@ var bodyParser = require('body-parser')
 const mysql = require('mysql');
 const UsuariosSequelizeDao = require('./lib/projeto/UsuariosSequelizeDao');
 const UsuariosController = require('./controllers/UsuariosController');
+const AuthController = require('./controllers/AuthController');
+
 /* criar conexão com o bando de dados  */
 const pool  = mysql.createPool({
     connectionLimit : 10,
@@ -15,6 +17,17 @@ const pool  = mysql.createPool({
     database        : process.env.MARIADB_DATABASE,
 });
 module.exports = pool;
+const passport = require('passport');
+const JwtStrategy = require('passport-jwt').Strategy,
+    ExtractJwt = require('passport-jwt').ExtractJwt;
+
+let opts = {}
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.secretOrKey = process.env.SEGREDO_JWT;
+passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
+    console.log('verificação jwt', jwt_payload);
+    return done(null, jwt_payload);
+}));
 
 const Sequelize = require("sequelize");
 
@@ -30,6 +43,7 @@ const sequelize = new Sequelize(
 
 let usuariosDao = new UsuariosSequelizeDao(sequelize);
 let usuariosController = new UsuariosController(usuariosDao);
+let authController = new AuthController(usuariosDao);
 /* identificar dados passados na URL */
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -138,6 +152,27 @@ app.post('/cadastro', (req, res) => {
 
 
 app.use('/usuarios', usuariosController.getRouter());
+
+app.get('/perfil', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), (req, res) => {
+  res.json({'usuario': req.user});
+});
+
+app.get('/login', (req, res) => {
+  authController.index(req, res);
+});
+
+app.post('/login', (req, res) => {
+  authController.logar(req, res);
+});
+
+app.get('*', (req, res, next) => {
+  res.status(404).send('Nao encontrado')
+});
+
+app.use(function (err, req, res, next) {
+  console.error('registrando erro: ', err.stack)
+  res.status(500).send('Erro no servidor: ' + err.message);
+});
 
 /* imprime no console a porta e atesta que está conectado */
 app.listen(port, () => {

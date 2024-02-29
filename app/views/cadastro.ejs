@@ -6,23 +6,20 @@
 </head>
 <body>   
     <%- include('../views/nav'); %>
-    <section id="final">
-      <section class="bg-light pt-4">
-        <div class="container">
-          <section id="contact">
-            <div class="container-lg">
-              <div class="text-center">
-                <h2>Cadastro de livros <%= (livro.id) %></h2>
-                <p class="lead">Inclua abaixo os dados do livro a ser cadastrado</p>
-              </div>       
-              <div class="row justify-content-center my-5">
-                <div class="col-lg-6">
-                  <% if (livro.id) { %>
-                    <form method="POST" action="/edicao/<%= (livro.id) %>" class="form">
-                  <% }else{ %>   
-                    <form method="POST" action="/cadastro" class="form">
-                  <% } %>
-                        <label for="titulo" class="form-label">Título:</label>
+      <section class="bg-light pt-4">    
+        <div class="container-lg">
+            <div class="text-center">
+              <h2>Cadastro de livros <%= (livro.id) %></h2>
+              <p class="lead">Inclua abaixo os dados do livro a ser cadastrado</p>
+            </div>       
+            <div class="row justify-content-center my-5">
+              <div class="col-lg-6">
+                <% if (livro.id) { %>
+                  <form method="POST" action="/edicao/<%= (livro.id) %>" class="form">
+                <% }else{ %>   
+                  <form method="POST" action="/cadastro" class="form">
+                <% } %>
+                      <label for="titulo" class="form-label">Título:</label>
                         <div class="input-group mb-4">
                             <span class="input-group-text">
                                 <i class="bi bi-envelope-fill text-secondary"></i>
@@ -31,34 +28,34 @@
                         </div>
                         <label for="autor" class="form-label">Autor:</label>
                         <div class="mb-4 input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-person-fill text-secondary"></i>
-                        </span>
-                        <input type="text" name="autor" id="autor" class="form-control" placeholder="Exemplo: Mario Quintana" value="<%- livro.autor %>" required/>
+                          <span class="input-group-text">
+                          <i class="bi bi-person-fill text-secondary"></i>
+                          </span>
+                          <input type="text" name="autor" id="autor" class="form-control" placeholder="Exemplo: Mario Quintana" value="<%- livro.autor %>" required/>
                         </div>
-                        <label for="categoria" class="form-label">Categoria:</label>
+                          <label for="categoria" class="form-label">Categoria:</label>
                         <div class="mb-4 input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-person-fill text-secondary"></i>
-                        </span>
-                        <select id="categoria" name="categoria" id="categoria" class="form-select" value="<%- livro.categoria %>">
-                            <option selected>Escolha...</option>
-                            <option>Aventura</option>
-                            <option>Ficcao</option>
-                            <option>Historico</option>
-                          </select>
+                          <span class="input-group-text">
+                          <i class="bi bi-person-fill text-secondary"></i>
+                          </span>
+                          <select id="categoria" name="categoria" id="categoria" class="form-select" value="<%- livro.categoria %>">
+                              <option selected>Escolha...</option>
+                              <option>Aventura</option>
+                              <option>Ficcao</option>
+                              <option>Historico</option>
+                            </select>
                         </div>
-                        <label for="resumo" class="form-label">Resumo:</label>
+                          <label for="resumo" class="form-label">Resumo:</label>
                         <div class="mb-4 mt-2 form-floating">
-                            <textarea class="form-control" name="resumo" id="resumo" style="height: 140px" placeholder="resumo" required><%- livro.resumo %></textarea>
-                            <label for="resumo">Seu texto...</label>
+                              <textarea class="form-control" name="resumo" id="resumo" style="height: 140px" placeholder="resumo" required><%- livro.resumo %></textarea>
+                              <label for="resumo">Seu texto...</label>
                         </div>
                         <div class="mb-4 text-center">
-                        <button type="submit" class="btn btn-secondary">Enviar</button>
+                          <button type="submit" class="btn btn-secondary">Enviar</button>
                         </div>
-                  </form>
+                    </form>
+                  </div>
                 </div>
-              </div>
             </div>
           </section>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
