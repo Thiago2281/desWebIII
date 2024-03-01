@@ -7,20 +7,29 @@ async function formEditar(id) {
 
         let dados = new URLSearchParams({nome, senha, papel, id});
 
-        await fetch (id, {
+        let resposta = await fetch (id, {
             method: 'PUT',
             body: dados
         });
-        
+        if (resposta.status==200){
+            window.location='/usuarios/edicao'
+        }
+        else{
+            let divusuarios = document.querySelector('#erro');
+            divusuarios.innerText = 'Erro ao alterar...'
+        }
     };
 }
 
-function deletar(id) {
+async function deletar(id) {
     const answer = confirm("Deseja realmente apagar este registro id " + id + "?");
     if (answer) {
-        fetch (id, {
+        let resposta = await fetch (id, {
             method: 'DELETE'
         });
+        if (resposta.status==200){
+            window.location='/usuarios/exclusao'
+        }
         
     };
 }

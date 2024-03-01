@@ -94,12 +94,12 @@ class UsuariosController {
         let usuario = await this.getUsuarioDaRequisicao(req);
         let id = req.params.id;
         try {
-            this.usuariosDao.alterar(id, usuario);
-            res.render('index')
+            await this.usuariosDao.alterar(id, usuario);
+            res.send('Ok')
         } catch (e) {
-            utils.renderizarJSON(res, {
+            res.status(400).json({
                 mensagem: e.message
-            }, 400);
+            });
         }
     }
     
