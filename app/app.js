@@ -7,6 +7,9 @@ const mysql = require('mysql');
 const UsuariosSequelizeDao = require('./lib/projeto/UsuariosSequelizeDao');
 const UsuariosController = require('./controllers/UsuariosController');
 const AuthController = require('./controllers/AuthController');
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
 
 /* criar conexão com o bando de dados  */
 const pool  = mysql.createPool({
@@ -21,8 +24,15 @@ const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
 
+var cookieExtractor = function(req) {
+  console.log(req.cookies);
+  var token = null;
+  if (req && req.cookies) token = req.cookies['token'];
+  return token;
+};
+
 let opts = {}
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.jwtFromRequest = cookieExtractor;
 opts.secretOrKey = process.env.SEGREDO_JWT;
 passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
     console.log('verificação jwt', jwt_payload);
@@ -65,7 +75,7 @@ app.get('/', (req, res) => {
   res.render('index')
 })
 
-app.get('/index', (req, res) => {
+app.get('/index', passport.authenticate('jwt', { session: false}), (req, res) => {
   pool.query('SELECT livros.titulo, livros.autor, categorias.nome AS categoria, livros.resumo FROM livros JOIN categorias ON livros.id_categoria=categorias.id ORDER BY titulo, autor', [], function(erro, listagem) {
     if(erro){
       res.status(200).send(erro)
@@ -153,7 +163,7 @@ app.post('/cadastro', (req, res) => {
 
 app.use('/usuarios', usuariosController.getRouter());
 
-app.get('/perfil', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), (req, res) => {
+app.get('/perfil', passport.authenticate('jwt', { session: false}), (req, res) => {
   res.json({'usuario': req.user});
 });
 

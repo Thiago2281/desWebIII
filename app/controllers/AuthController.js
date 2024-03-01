@@ -17,6 +17,7 @@ class AuthController {
             let token = jwt.sign({
                 ...usuario.toJSON()
             }, this.SEGREDO_JWT);
+            res.cookie('jwt',token);
             res.json({
                 token,
                 mensagem: 'Usuário logado com sucesso!'
