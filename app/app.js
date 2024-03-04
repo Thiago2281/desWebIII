@@ -6,7 +6,9 @@ var bodyParser = require('body-parser')
 const mysql = require('mysql');
 const UsuariosSequelizeDao = require('./lib/projeto/UsuariosSequelizeDao');
 const UsuariosController = require('./controllers/UsuariosController');
+const DocumentosController = require('./controllers/DocumentosController');
 const AuthController = require('./controllers/AuthController');
+const DocumentosMongoDao = require('./lib/projeto/DocumentosMongoDao');
 
 /* criar conexão com o bando de dados  */
 const pool  = mysql.createPool({
@@ -17,6 +19,13 @@ const pool  = mysql.createPool({
     database        : process.env.MARIADB_DATABASE,
 });
 module.exports = pool;
+
+const { MongoClient } = require("mongodb");
+
+const uri = `mongodb://${process.env.MONGODB_INITDB_ROOT_USERNAME}:${process.env.MONGODB_INITDB_ROOT_PASSWORD}@mongo`;
+const mongoClient = new MongoClient(uri);
+
+
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
@@ -44,6 +53,9 @@ const sequelize = new Sequelize(
 let usuariosDao = new UsuariosSequelizeDao(sequelize);
 let usuariosController = new UsuariosController(usuariosDao);
 let authController = new AuthController(usuariosDao);
+let documentosDao = new DocumentosMongoDao(mongoClient);
+let documentosController = new DocumentosController(documentosDao);
+
 /* identificar dados passados na URL */
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -152,6 +164,8 @@ app.post('/cadastro', (req, res) => {
 
 
 app.use('/usuarios', usuariosController.getRouter());
+
+app.use('/documentos', documentosController.getRouter());
 
 app.get('/perfil', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), (req, res) => {
   res.json({'usuario': req.user});

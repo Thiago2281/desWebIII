@@ -15,6 +15,15 @@ services:
     volumes:
       - /mariadb/setup.sql:/docker-entrypoint-initdbd/setup.sql
       - dados_mariadb:/var/lib/mysql
+   
+  mongo:
+    image: mongodb/mongodb-community-server:4.4.25-ubuntu2004
+    env_file: .env
+    volumes:
+      - mongo_data:/data/db
+
 volumes:
   dados_mariadb:
   node_modules:
+  mongo_data:
+
