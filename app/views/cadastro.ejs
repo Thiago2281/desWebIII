@@ -80,7 +80,6 @@
             <th>Nome</th>
             <th>Autor</th>
             <th>Preco</th>
-            <th>Media</th>
           </tr>
           <tbody>
             <tr>
@@ -118,13 +117,14 @@
           preco: preco.value
         });
       }
+
       return {
         nome,
         registros,
         autor,
         preco,
         message,
-        inserir
+        inserir,
       }
     }
   }).mount('#app')
