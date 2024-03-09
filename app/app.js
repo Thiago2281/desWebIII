@@ -82,7 +82,12 @@ app.get('/index', (req, res) => {
     if(erro){
       res.status(200).send(erro)
     }
-    res.render('lista', {livros: listagem});
+    console.log(req.headers)
+    if (req.headers.accept == 'application/json') {
+      res.json(listagem)
+    } else {
+      res.render('lista', {livros: listagem});
+    }
   });
 });
 

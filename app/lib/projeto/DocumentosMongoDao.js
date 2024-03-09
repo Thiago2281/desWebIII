@@ -15,18 +15,13 @@ class DocumentosMongoDao {
         return await documentos.toArray()
     }
 
-    inserir(documento) {
+    async inserir(documento) {
+        await this.client.connect();
+        const database = this.client.db(this.banco);
+        const collection = database.collection(this.colecao);
         this.validar(documento);
-        return new Promise(async (resolve, reject) => {
-            let sql = `{titulo: '?', autor: '?', descricao: '?'}`;
-            await documentos.insertOne(sql,[documento.titulo, documento.autor, documento.descricao],
-                function (error, resultado, fields) {
-                if (error) {
-                    return reject('Erro: ' + error.message);
-                }
-                return resolve(resultado.insertId);
-            });
-        });
+        let resultado = await collection.insertOne(documento);
+        return resultado.insertedId;                       
     }
 
     alterar(id, documento) {
@@ -34,16 +29,18 @@ class DocumentosMongoDao {
         this.documentos[id] = documento;
     }
 
-    apagar(id) {
-        return new Promise((resolve, reject) => {
-            let sql = `{_id: '?'}`;
-            this.pool.query(sql, [id], function (error, resultado, fields) {
-                if (error) {
-                    return reject('Erro: ' + error.message);
-                }
-                return resolve(id);
-            });
-        });
+    async apagar(id) {
+        await this.client.connect();
+        const database = this.client.db(this.banco);
+        const collection = database.collection(this.colecao);
+        const ObjectId = require('mongodb').ObjectId;
+        let resultado = await collection.deleteOne({_id: new ObjectId(id)});
+        if (resultado.deletedCount === 1) {
+            console.log("Um documento deletado com sucesso.");  
+          } else {     
+            console.log("Nenhum documento com esse _id. 0 documentos deletados.");    
+          }
+        return resultado
     }
 
     validar(documento) {

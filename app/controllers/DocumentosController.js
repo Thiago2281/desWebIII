@@ -43,10 +43,8 @@ class DocumentosController {
     }
     
     async inserir(req, res, next) {
-        console.log("inserir0")
         try {
             let documento = await this.getDocumentoDaRequisicao(req);
-            console.log("inserir", documento)
             documento.id = await this.documentosDao.inserir(documento);
             res.json({
                 documento: {
@@ -61,7 +59,6 @@ class DocumentosController {
             });*/
             next(e);
         }
-        console.log("inserir2")
     }
 
     async alterar(req, res) {
