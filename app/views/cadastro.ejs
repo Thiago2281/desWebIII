@@ -21,74 +21,56 @@
           <div class="col-lg-6">
             <% if (livro.id) { %>
               <form method="POST" action="/edicao/<%= (livro.id) %>" class="form">
-            <% }else{ %>
+                <% }else{ %>
                   <!-- <form method="POST" action="/cadastro" class="form"> -->
                   <form method="POST" @submit.prevent="inserir" class="form">
-            <% } %>
-                    <label for="titulo" class="form-label">Título:</label>
-                    <div class="input-group mb-4">
-                      <span class="input-group-text">
-                        <i class="bi bi-envelope-fill text-secondary"></i>
-                      </span>
-                      <input type="text" name="titulo" v-model="nome" id="titulo" class="form-control"
-                        placeholder="Título do livro" required />
-                    </div>
-                    <label for="autor" class="form-label">Autor:</label>
-                    <div class="mb-4 input-group">
-                      <span class="input-group-text">
-                        <i class="bi bi-person-fill text-secondary"></i>
-                      </span>
-                      <input type="text" name="autor" v-model="autor" id="autor" class="form-control"
-                        placeholder="Exemplo: Mario Quintana" required />
-                    </div>
-                    <label for="categoria" class="form-label">Categoria:</label>
-                    <div class="mb-4 input-group">
-                      <span class="input-group-text">
-                        <i class="bi bi-person-fill text-secondary"></i>
-                      </span>
-                      <select id="categoria" name="categoria" id="categoria" class="form-select"
-                        value="<%- livro.categoria %>">
-                        <option selected>Escolha...</option>
-                        <option>Aventura</option>
-                        <option>Ficcao</option>
-                        <option>Historico</option>
-                      </select>
-                    </div>
-                    <label for="resumo" class="form-label">Resumo:</label>
-                    <div class="mb-4 mt-2 form-floating">
-                      <textarea class="form-control" name="resumo" id="resumo" style="height: 140px"
-                        placeholder="resumo" required></textarea>
-                      <label for="resumo">Seu texto...</label>
-                    </div>
-                    <label for="preco" class="form-label">Preco:</label>
-                    <div class="mb-4 input-group">
-                      <span class="input-group-text">
-                        <i class="bi bi-person-fill text-secondary"></i>
-                      </span>
-                      <input type="number" name="preco" v-model="preco" id="preco" class="form-control" required />
-                    </div>
-                    <div class="mb-4 text-center">
-                      <button type="submit" class="btn btn-secondary">Enviar</button>
-                    </div>
-              </form>
+                    <% } %>
+                      <label for="titulo" class="form-label">Título:</label>
+                      <div class="input-group mb-4">
+                        <span class="input-group-text">
+                          <i class="bi bi-envelope-fill text-secondary"></i>
+                        </span>
+                        <input type="text" name="titulo" v-model="nome" id="titulo" class="form-control"
+                          placeholder="Título do livro" required />
+                      </div>
+                      <label for="autor" class="form-label">Autor:</label>
+                      <div class="mb-4 input-group">
+                        <span class="input-group-text">
+                          <i class="bi bi-person-fill text-secondary"></i>
+                        </span>
+                        <input type="text" name="autor" v-model="autor" id="autor" class="form-control"
+                          placeholder="Exemplo: Mario Quintana" required />
+                      </div>                      
+                      <label for="preco" class="form-label">Preco:</label>
+                      <div class="mb-4 input-group">
+                        <span class="input-group-text">
+                          <i class="bi bi-person-fill text-secondary"></i>
+                        </span>
+                        <input type="number" name="preco" v-model="preco" id="preco" step="0.01" class="form-control" required />
+                      </div>
+                      <div class="mb-4 text-center">
+                        <button type="submit" class="btn btn-secondary">Enviar</button>
+                      </div>
+                  </form>
           </div>
-        </div>
-      </div>
-      <div>
-        <table>
-          <tr>
-            <th>Nome</th>
-            <th>Autor</th>
-            <th>Preco</th>
-          </tr>
-          <tbody>
+        
+      
+        <div class="col-lg-6">
+          <table>
             <tr>
-            <tr v-for="registro of registros">
-              <td>{{registro.nome}}</td>
-              <td>{{registro.autor}}</td>
-              <td>{{registro.preco}}</td>
-          </tbody>
-        </table>
+              <th class="px-3">Nome</th>
+              <th class="px-3">Autor</th>
+              <th class="px-3">Preco</th>
+            </tr>
+            <tbody>
+              <tr>
+              <tr v-for="registro of registros" :style="{ color: registro.preco > 50 ? 'red' : 'green' }">
+                <td>{{registro.nome}}</td>
+                <td>{{registro.autor}}</td>
+                <td>{{registro.preco}}</td>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -109,7 +91,6 @@
       const autor = Vue.ref('')
       const preco = Vue.ref('')
       const registros = Vue.ref([])
-      const message = Vue.ref('Hello')
       function inserir() {
         registros.value.push({
           nome: nome.value,
@@ -123,7 +104,6 @@
         registros,
         autor,
         preco,
-        message,
         inserir,
       }
     }
