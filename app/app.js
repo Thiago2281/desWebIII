@@ -95,6 +95,10 @@ app.get('/index', (req, res) => {
 app.get('/sobre', (req, res) => {
     res.render('sobre')
   })
+
+app.get('/teste', (req, res) => {
+    res.render('teste')
+  })
   
 app.get('/cadastro', (req, res) => {
   res.render('cadastro', {livro:{}});
