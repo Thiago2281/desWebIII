@@ -1,28 +1,31 @@
 export default {
     props: {
-        registros: Array,
-        nome2: String
+        livros: Array,
     },
-    setup(props, {emit}) {
-        const nome = Vue.ref(props.nome2)        
+    setup(props, {emit}) {       
         const autor = Vue.ref('')
         const preco = Vue.ref('')
-        const registros = Vue.ref(props.registros || [])
+        const nome = Vue.ref('')
+        const id = Vue.ref('')
+        const livros = Vue.ref(props.livros || [])
         function inserir() {
-          registros.value.push({
+          livros.value.push({
             nome: nome.value,   
             autor: autor.value,
-            preco: preco.value
+            preco: preco.value,
+            id: livros.value.length + 1
           });
         }
-        function selecionar(registro) {
-            emit('selecionado', registro);
+        function selecionar(livro) {
+            // emit('selecionado', livro);
+            this.$router.push('/detalhes/' + livro.id);
         }
         return {
+          livros,
           nome,
-          registros,
           autor,
           preco,
+          id,
           inserir,
           selecionar
         }
@@ -67,11 +70,11 @@ export default {
                     <th class="px-3">Preco</th>
                 </tr>
                 <tbody>
-                    <tr v-for="registro of registros" :style="{ color: registro.preco > 50 ? 'red' : 'green' }">
-                        <td>{{registro.nome}}</td>
-                        <td>{{registro.autor}}</td>
-                        <td>{{registro.preco}}</td>
-                        <button @click="selecionar(registro.nome);">Selecionar</button>
+                    <tr v-for="livro of livros" :style="{ color: livro.preco > 50 ? 'red' : 'green' }">
+                        <td>{{livro.nome}}</td>
+                        <td>{{livro.autor}}</td>
+                        <td>{{livro.preco}}</td>
+                        <button @click="selecionar(livro);">Selecionar</button>
                     </tr>
                 </tbody>
             </table>

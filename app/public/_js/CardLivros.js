@@ -1,26 +1,25 @@
 export default {
     props: {
-        registros: Array,
-        nome2: String
+        livros: Array,
     },
     setup(props, {emit}) {
         const nome = Vue.ref(props.nome2)        
         const autor = Vue.ref('')
         const preco = Vue.ref('')
-        const registros = Vue.ref(props.registros || [])
+        const livros = Vue.ref(props.livros || [])
         function inserir() {
-          registros.value.push({
+          livros.value.push({
             nome: nome.value,   
             autor: autor.value,
             preco: preco.value
           });
         }
-        function selecionar(registro) {
-            emit('selecionado', registro);
+        function selecionar(livro) {
+            emit('selecionado', livro);
         }
         return {
           nome,
-          registros,
+          livros,
           autor,
           preco,
           inserir,
@@ -29,10 +28,10 @@ export default {
     },
     template: `
     <div class="row justify-content-center my-5">
-        <div class="col" v-for="registro of registros" :style="{ color: registro.preco > 50 ? 'red' : 'green' }">
+        <div class="col" v-for="livro of livros" :style="{ color: livro.preco > 50 ? 'red' : 'green' }">
             <article class="card text-center">
-                    <p>{{registro.nome}}</p>
-                    <button @click="selecionar(registro);">Selecionar</button>
+                    <p>{{livro.nome}}</p>
+                    <button @click="selecionar(livro);">Selecionar</button>
             </article>
         </div>
     </div>
