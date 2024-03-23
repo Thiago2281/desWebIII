@@ -2,6 +2,21 @@
 <html lang="pt-BR">
 
 <head>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', async () => {
+        try {
+            let registration = await navigator.serviceWorker.register('/_js/service-worker.js')
+            console.log('Service Worker registered:', registration);
+        } catch(error) {
+            console.log('Service Worker registration failed:', error);
+        }
+      });
+    }
+  </script>
+  <link rel="manifest" href="/manifest.json">
+
+
   <meta charset="UTF-8">
   <title>Cadastro</title>
 
