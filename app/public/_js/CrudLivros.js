@@ -9,16 +9,25 @@ export default {
         const id = Vue.ref('')
         const livros = Vue.ref(props.livros || [])
         function inserir() {
-          livros.value.push({
-            nome: nome.value,   
-            autor: autor.value,
-            preco: preco.value,
-            id: livros.value.length + 1
-          });
+        //   livros.value.push({
+        //     nome: nome.value,   
+        //     autor: autor.value,
+        //     preco: preco.value,
+        //     id: livros.value.length + 1
+        //   });
+        (async () => {
+            let id = await adicionar({nome: nome.value, autor: autor.value, preco: preco.value})
+            alert('Registro #' + id + ' adicionado!')
+        })()
         }
         function selecionar(livro) {
             // emit('selecionado', livro);
             this.$router.push('/detalhes/' + livro.id);
+        }
+        async function apagar(id) {
+            if (confirm('Quer apagar o #' + id + '?')) {
+                console.log('apagado', await deletar(id));
+            }
         }
         return {
           livros,
@@ -27,7 +36,8 @@ export default {
           preco,
           id,
           inserir,
-          selecionar
+          selecionar, 
+          apagar
         }
     },
     template: `
@@ -75,6 +85,8 @@ export default {
                         <td>{{livro.autor}}</td>
                         <td>{{livro.preco}}</td>
                         <button @click="selecionar(livro);">Selecionar</button>
+                        <button onclick="editar({{livro.id}});">Editar</button>
+                        <button @click="apagar(livro.id);">Apagar</button>
                     </tr>
                 </tbody>
             </table>

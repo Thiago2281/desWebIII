@@ -60,7 +60,7 @@
   import ListLivros from './_js/ListLivros.js'
   import Detalhes from './_js/Detalhes.js'
   
-  let livros = Vue.ref([{nome: 'Livro1', autor: 'Thiago', preco: '11', id: 1}]);
+  let livros = Vue.ref(await listar());
     const routes = [
         { path: '/', component: ListLivros, props: {
             livros
@@ -99,3 +99,4 @@
     }
   }).use(router).mount('#app')
 </script>
+<script src="/_js/LivrosStore.js"></script>
