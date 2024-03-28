@@ -95,15 +95,16 @@ class LivrosController {
     async alterar(req, res) {
         let livro = await this.getLivroDaRequisicao(req);
         let id = req.params.id;
+        console.log(livro,id)
         try {
             this.livrosDao.alterar(id, livro);
-            utils.renderizarJSON(res, {
+            res.json({
                 mensagem: 'mensagem_livro_alterado'
             });
         } catch (e) {
-            utils.renderizarJSON(res, {
+            res.status(400).json({
                 mensagem: e.message
-            }, 400);
+            });
         }
     }
     

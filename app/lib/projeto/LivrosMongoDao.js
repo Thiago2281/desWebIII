@@ -12,40 +12,45 @@ class LivrosMongoDao {
         await this.client.connect();
         const database = this.client.db(this.banco);
         const collection = database.collection(this.colecao);
-    
-        const livros = await collection.find();
+        const livros = await collection.find({}).project({ _id: 0, id: '$_id', nome: 1, autor: 1, preco: 1 });
         return await livros.toArray()
     }
     async procurarPorId(id) {
         await this.client.connect();
         const database = this.client.db(this.banco);
-        const collection = database.collection(this.colecao);    
-        const livro = await collection.findOne({_id: new ObjectId(id)});
-        return livro;   
+        const collection = database.collection(this.colecao);
+        const livro = await collection.findOne({ _id: new ObjectId(id) });
+        return livro;
     }
 
     async inserir(livro) {
         this.validar(livro);
         // livro.senha = bcrypt.hashSync(livro.senha, 10);
-        
+
         await this.client.connect();
         const database = this.client.db(this.banco);
         const collection = database.collection(this.colecao);
-    
+
         return await collection.insertOne(livro);
     }
 
-    alterar(id, livro) {
+    async alterar(id, livro) {
         this.validar(livro);
-        this.livros[id] = livro;
+        await this.client.connect();
+        const database = this.client.db(this.banco);
+        const collection = database.collection(this.colecao);
+
+        return await collection.updateOne(
+            { "_id": new ObjectId(id) }, { $set: livro }
+        );
     }
 
     async apagar(id) {
         await this.client.connect();
         const database = this.client.db(this.banco);
-        const collection = database.collection(this.colecao);  
-        const livro = await collection.deleteOne({_id: new ObjectId(id)});
-        return livro; 
+        const collection = database.collection(this.colecao);
+        const livro = await collection.deleteOne({ _id: new ObjectId(id) });
+        return livro;
     }
 
     validar(livro) {
@@ -66,7 +71,7 @@ class LivrosMongoDao {
         // await this.client.connect();
         // const database = this.client.db(this.banco);
         // const collection = database.collection(this.colecao);
-    
+
         // const livro = await collection.findOne({nome});
         // if (bcrypt.compareSync(senha, livro.senha)) {
         //     let { id, nome, nota1, nota2, senha, papel } = livro;

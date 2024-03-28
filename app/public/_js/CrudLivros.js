@@ -10,10 +10,20 @@ export default {
         const livroEditado = Vue.ref({});
         const livros = Vue.ref(props.livros || [])
         function inserir() {
-            (async () => {
-                let id = await adicionar({ nome: livroEditado.value.nome, autor: livroEditado.value.autor, preco: livroEditado.value.preco })
-                alert('Registro #' + id + ' adicionado!')
-            })()
+            if (livroEditado.value.id) {
+                (async () => {
+                    let id = await alterar(livroEditado.value)
+                    alert('Registro #' + id + ' alterado!')
+                    emit('refresh')
+                })()
+            } else {
+                (async () => {
+                    let id = await adicionar({ nome: livroEditado.value.nome, autor: livroEditado.value.autor, preco: livroEditado.value.preco })
+                    alert('Registro #' + id + ' adicionado!')
+                    emit('refresh')
+                })()
+            }
+
         }
         function selecionar(livro) {
             // emit('selecionado', livro);
@@ -26,6 +36,7 @@ export default {
             if (confirm('Quer apagar o #' + id + '?')) {
                 console.log('apagado', await deletar(id));
             }
+            emit('refresh')
         }
         return {
             livros,
@@ -75,18 +86,20 @@ export default {
         <div class="col">
             <table>
                 <tr>
+                    <th class="px-3">Id</th>
                     <th class="px-3">Nome</th>
                     <th class="px-3">Autor</th>
                     <th class="px-3">Preco</th>
                 </tr>
                 <tbody>
                     <tr v-for="livro of livros" :style="{ color: livro.preco > 50 ? 'red' : 'green' }">
+                        <td>{{livro.id}}</td>
                         <td>{{livro.nome}}</td>
                         <td>{{livro.autor}}</td>
                         <td>{{livro.preco}}</td>
                         <button @click="selecionar(livro);">Selecionar</button>
                         <button @click="editar(livro);">Editar</button>
-                        <button @click="apagar(livro._id);">Apagar</button>
+                        <button @click="apagar(livro.id);">Apagar</button>
                     </tr>
                 </tbody>
             </table>
