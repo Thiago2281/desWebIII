@@ -9,7 +9,8 @@ const UsuariosController = require('./controllers/UsuariosController');
 const DocumentosController = require('./controllers/DocumentosController');
 const AuthController = require('./controllers/AuthController');
 const DocumentosMongoDao = require('./lib/projeto/DocumentosMongoDao');
-
+const LivrosController = require('./controllers/LivrosController');
+const LivrosMongoDao = require('./lib/projeto/LivrosMongoDao');
 /* criar conexão com o bando de dados  */
 const pool  = mysql.createPool({
     connectionLimit : 10,
@@ -55,6 +56,8 @@ let usuariosController = new UsuariosController(usuariosDao);
 let authController = new AuthController(usuariosDao);
 let documentosDao = new DocumentosMongoDao(mongoClient);
 let documentosController = new DocumentosController(documentosDao);
+let livrosDao = new LivrosMongoDao(mongoClient);
+let livrosController = new LivrosController(livrosDao);
 
 /* identificar dados passados na URL */
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -76,6 +79,26 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
   res.render('indexVue')
 })
+
+app.use('/livros', livrosController.getRouter());
+
+app.get([
+  '/',
+  '/index'
+  ], (req, res) => {
+      livrosController.index(req, res)
+});
+
+app.get('/lista', async (req, res) => {
+  let livros = await livrosDao.listar();
+  res.render('lista', {livros});
+  if (req.headers.accept == 'application/json') {
+      res.json(livros);
+  }
+  else {
+      res.render('lista', {livros});
+  }
+});
 
 app.get('/index', (req, res) => {
   pool.query('SELECT livros.titulo, livros.autor, categorias.nome AS categoria, livros.resumo FROM livros JOIN categorias ON livros.id_categoria=categorias.id ORDER BY titulo, autor', [], function(erro, listagem) {
