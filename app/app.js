@@ -25,7 +25,7 @@ const { MongoClient } = require("mongodb");
 
 const uri = `mongodb://${process.env.MONGODB_INITDB_ROOT_USERNAME}:${process.env.MONGODB_INITDB_ROOT_PASSWORD}@mongo`;
 const mongoClient = new MongoClient(uri);
-
+const webpush = require('web-push');
 
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy,
@@ -72,6 +72,40 @@ app.use(solicitacao);
 
 /* padronizar a pasta public como base para acessar imagens e outros dados */
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+// Defina as chaves VAPID - você pode gerar essas chaves usando o web-push
+webpush.setVapidDetails(
+  'mailto:seuemail@example.com',
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+);
+
+let subscriptions = [];
+// Rota para salvar as subscrições
+app.post('/subscribe', (req, res) => {
+  subscription = req.body;
+  subscriptions.push(subscription);
+  console.log({ subscriptions });
+  res.status(201).json({});
+});
+
+app.get('/push', (req, res) => {
+  res.render('push');
+})
+
+// Rota para enviar notificações
+app.get('/notificar', (req, res) => {
+  const payload = JSON.stringify({ title: req.query.msg });
+  console.log('notificando', subscriptions);
+  for (let subscription of subscriptions) {
+      webpush.sendNotification(subscription, payload)
+          .catch(error => console.error('Erro ao notificar:', error));
+      console.log('notificando', subscription);
+  }
+  res.send('ok');
+});
 
 /* usar arquivos ejs como renderização */
 app.set('view engine', 'ejs');

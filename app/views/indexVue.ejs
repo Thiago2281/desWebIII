@@ -111,3 +111,26 @@
   }).use(router).mount('#app')
 </script>
 <script src="/_js/LivrosStoreAPI.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+          Notification.requestPermission();
+          navigator.serviceWorker.register('/worker.js', { scope: '/'})
+              .then(registration => {
+                  console.log('Service Worker registered:', registration);
+                  // const worker = new Worker('_js/worker.js');
+                  console.log({ registration });
+                  // Envia dados para o Worker
+                  // registration.postMessage('oi da página');
+              
+                  // Escuta a resposta do Worker
+                  registration.addEventListener('message', event => {
+                      console.log('recebeu ', event.data);
+                  });
+              })
+              .catch(error => {
+                  console.log('Service Worker registration failed:', error);
+              });
+      });
+  }
+</script>
