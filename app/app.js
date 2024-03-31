@@ -92,7 +92,7 @@ app.get([
 app.get('/lista', async (req, res) => {
   let livros = await livrosDao.listar();
   res.render('lista', {livros});
-  if (req.headers.accept == 'application/json') {
+  if (req.headers.accept == 'application/json') { 
       res.json(livros);
   }
   else {
