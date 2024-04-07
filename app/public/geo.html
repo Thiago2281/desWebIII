@@ -1,0 +1,19 @@
+<div>
+    <div id="erro"></div>
+    Latitude: <span id="latitude"></span>
+    Longitude: <span id="longitude"></span>
+    <button onclick="verLocalizacao();">Ver Localizacao</button>
+</div>
+<script>
+    function verLocalizacao(){
+        navigator.geolocation.getCurrentPosition(
+            (localizacao) => {
+                document.querySelector('#latitude').innerHTML = localizacao.coords.latitude;
+                document.querySelector('#longitude').innerHTML = localizacao.coords.longitude;
+            },
+            (erro) => {
+                document.querySelector('#erro').innerHTML = 'Erro: ' + erro.message;
+            }
+        )
+    }
+</script>

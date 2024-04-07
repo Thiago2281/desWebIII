@@ -1,0 +1,46 @@
+<video id="videoElement" autoplay playsinline></video>
+<canvas id="canvas" style="display: none;"></canvas>
+<button id="captureButton">Capturar Foto</button>
+<img id="capturedImage" src="" alt="Captured Image">
+<a id="downloadButton" download="captured_image.png">Download</a>
+
+<script>
+    let canvas = document.querySelector('canvas');
+    let ctx = canvas.getContext('2d');
+    let captureButton = document.querySelector('#captureButton');
+    let capturedImage = document.querySelector('#capturedImage');
+    let downloadButton= document.querySelector('#downloadButton');
+    const videoElement = document.getElementById
+    videoElement.addEventListener('loadedmetadata', function() {
+        // Configurar as dimensões do canvas para corresponder às dimensões do vídeo
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+    });
+
+    
+    async function getCameraStream() {
+      try {
+        // Solicitar permissão para acessar a câmera
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true }); 
+       
+        // Exibir o vídeo da câmera no elemento de vídeo
+        const videoElement = document.getElementById('videoElement');
+        videoElement.srcObject = stream;
+        return stream;
+      } catch (error) { console.error('Erro ao acessar a câmera:', error); } 
+    }
+    getCameraStream();
+    captureButton.addEventListener('click', function() {
+        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height); // Desenha o vídeo no canvas
+        canvas.toBlob(function(blob) { 
+            const imageUrl = URL.createObjectURL(blob); // Criar um URL para a imagem capturada
+            capturedImage.src = imageUrl; // Exibir a imagem capturada
+            downloadButton.href = imageUrl; 
+
+            // Limpar o URL do objeto após alguns segundos para liberar memória
+            setTimeout(() => { URL.revokeObjectURL(imageUrl); }, 5000); // 5 segundos
+        });
+    });
+
+    </script>
+    
